@@ -122,7 +122,7 @@ For most common cases, use **<tt>tcp</tt>**, which is a *disconnected TCP* trans
 
 The inter-process <tt>ipc</tt> transport is disconnected, like <tt>tcp</tt>. It has one limitation: it does not yet work on Windows. By convention we use endpoint names with an ".ipc" extension to avoid potential conflict with other file names. On UNIX systems, if you use <tt>ipc</tt> endpoints you need to create these with appropriate permissions otherwise they may not be shareable between processes running under different user IDs. You must also make sure all processes can access the files, e.g., by running in the same working directory.
 
-The inter-thread transport, **<tt>inproc</tt>**, is a connected signaling transport. It is much faster than <tt>tcp</tt> or <tt>ipc</tt>. This transport has a specific limitation compared to <tt>tcp</tt> and <tt>ipc</tt>: **the server must issue a bind before any client issues a connect**. This was fixed in ZeroMQ v4.0 and later versions. 
+The inter-thread transport, **<tt>inproc</tt>**, is a connected signaling transport. It is much faster than <tt>tcp</tt> or <tt>ipc</tt>. This transport has a specific limitation compared to <tt>tcp</tt> and <tt>ipc</tt>: **the server must issue a bind before any client issues a connect**. This is something future versions of ZeroMQ may fix, but at present this defines how you use <tt>inproc</tt> sockets. We create and bind one socket and start the child threads, which create and connect the other sockets.
 
 ### ZeroMQ is Not a Neutral Carrier {#ZeroMQ-is-Not-a-Neutral-Carrier}
 
@@ -603,7 +603,7 @@ A frequent request from ZeroMQ users is, "How do I connect my ZeroMQ network wit
 
 The simple answer is to build a *bridge*. A bridge is a small application that speaks one protocol at one socket, and converts to/from a second protocol at another socket. A protocol interpreter, if you like. A common bridging problem in ZeroMQ is to bridge two transports or networks.
 
-As an example, we're going to write a little proxy that sits in between a publisher and a set of subscribers, bridging two networks. The frontend socket (SUB) faces the internal network where the weather server is sitting, and the backend (PUB) faces subscribers on the external network. It subscribes to the weather service on the frontend socket, and republishes its data on the backend socket.
+As an example, we're going to write a little proxy that sits in between a publisher and a set of subscribers, bridging two networks. The frontend socket (XSUB) faces the internal network where the weather server is sitting, and the backend (XPUB) faces subscribers on the external network. It subscribes to the weather service on the frontend socket, and republishes its data on the backend socket.
 
 {{< examples name="wuproxy" title="Weather update proxy" >}}
 
